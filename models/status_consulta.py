@@ -1,6 +1,11 @@
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
-class Status_consulta:
-    id: int
-    descricao: strS
+class StatusConsulta:
+    descricao: str
+
+    id: Optional[int] = None
+
+    def __str__(self):
+        return f"StatusConsulta(id={self.id}, descricao={self.descricao})"
