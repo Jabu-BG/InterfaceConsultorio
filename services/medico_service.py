@@ -3,7 +3,7 @@ from models.agenda_medica import AgendaMedica
 from repositories.medico_repository import MedicoRepository
 from repositories.agenda_repository import AgendaRepository
 from datetime import time
-import re
+from utils.validacoes import formatar_crm, crm_valido
 
 class MedicoService:
     def __init__(self):
@@ -14,9 +14,9 @@ class MedicoService:
         if not nome or not nome.strip():
             raise ValueError("Nome do médico é obrigatório.")
         
-        crm_limpo = self._formatar_crm(crm)
-        if not self._crm_valido(crm_limpo):
-            raise ValueError("CRM  inválido. Use o formato CRM/UF 000000.")
+        crm_limpo = formatar_crm(crm)
+        if not crm_valido(crm_limpo):
+            raise ValueError("CRM inválido. Use o formato CRM/UF 000000.")
         
         if self._repo_medico.buscar_por_crm(crm_limpo):
             raise ValueError(f"CRM {crm} já está cadastrado no sistema.")
@@ -37,7 +37,7 @@ class MedicoService:
         return medico
     
     def listar(self) -> list[Medico]:
-        return self._self_medico.listar()
+        return self._repo_medico.listar()
     
     def listar_por_especialidade(self, especialidade: str) -> list[Medico]:
         return self._repo_medico.listar_por_especialidade(especialidade)
@@ -49,8 +49,8 @@ class MedicoService:
         if not medico.nome or not medico.nome.strip():
             raise ValueError("Nome do médico é obrigatório.")
         
-        crm_limpo = self._formatar_crm(medico.crm)
-        if not self._crm_valido(crm_limpo):
+        crm_limpo = formatar_crm(medico.crm)
+        if not crm_valido(crm_limpo):
             raise ValueError("CRM inválido.")
         
         existente = self._repo_medico.buscar_por_crm(crm_limpo)
@@ -74,7 +74,7 @@ class MedicoService:
             raise ValueError("Dia da semana inválido. Use 0 (Segunda) a 6 (Domingo).")
         
         if hora_fim <= hora_inicio:
-            raise ValueError("Horário de fim deve ser deposi do horário de início.")
+            raise ValueError("Horário de fim deve ser depois do horário de início.")
         
         agenda = AgendaMedica(
             medico_id = medico_id,
@@ -92,10 +92,3 @@ class MedicoService:
         removido = self._repo_agenda.deletar(agenda_id)
         if not removido:
             raise ValueError(f"Horário de agenda com id {agenda_id} não encontrado.")
-        
-    def _formatar_crm(self, crm: str) -> str:
-        return crm.strip().upper()
-    
-    def _crm_valido(self, crm: str) -> bool:
-        padrao = r'^CRM/[A-Z]{2}\s\d{4,6}$'
-        return bool(re.match(padrao, crm))

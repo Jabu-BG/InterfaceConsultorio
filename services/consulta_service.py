@@ -3,7 +3,8 @@ from repositories.consulta_repository import ConsultaRepository
 from repositories.paciente_repository import PacienteRepository
 from repositories.medico_repository import MedicoRepository
 from repositories.agenda_repository import AgendaRepository
-from datetime import date, time, datetime
+from datetime import date, time
+from utils.datas import data_e_passada
 
 
 class ConsultaService:
@@ -23,7 +24,8 @@ class ConsultaService:
         if not self._repo_medico.buscar_por_id(medico_id):
             raise ValueError(f"Médico com id {medico_id} não encontrado.")
 
-        self._validar_data_futura(data)
+        if data_e_passada(data):
+            raise ValueError("Não é possível agendar consultas em datas passadas.")
 
         dia_semana = data.weekday()
 
@@ -70,7 +72,8 @@ class ConsultaService:
         if consulta.status_id == 2:
             raise ValueError("Não é possível reagendar uma consulta já realizada.")
 
-        self._validar_data_futura(nova_data)
+        if data_e_passada(nova_data):
+            raise ValueError("Não é possível agendar consultas em datas passadas.")
 
         dia_semana = nova_data.weekday()
         if not self._repo_agenda.medico_atende_no_horario(
@@ -117,7 +120,3 @@ class ConsultaService:
             raise ValueError("Consulta já está marcada como realizada.")
 
         self._repo_consulta.atualizar_status(consulta_id, 2)
-
-    def _validar_data_futura(self, data: date) -> None:
-        if data < date.today():
-            raise ValueError("Não é possível agendar consultas em datas passadas.")
