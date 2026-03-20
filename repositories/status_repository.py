@@ -1,7 +1,7 @@
 from database.connection import get_connection
 from models.status_consulta import StatusConsulta
 
-class StatusConsulta:
+class StatusRepository:
 
     def buscar_por_id(self, id: int) -> StatusConsulta | None:
         conn = get_connection()
@@ -13,9 +13,9 @@ class StatusConsulta:
 
         if row is None:
             return None
-        
+
         return self._row_para_status(row)
-    
+
     def listar(self) -> list[StatusConsulta]:
         conn = get_connection()
         cursor = conn.cursor()
@@ -25,9 +25,9 @@ class StatusConsulta:
         conn.close()
 
         return [self._row_para_status(row) for row in rows]
-    
+
     def _row_para_status(self, row) -> StatusConsulta:
         return StatusConsulta(
-            id = row["id"],
+            id        = row["id"],
             descricao = row["descricao"]
         )
