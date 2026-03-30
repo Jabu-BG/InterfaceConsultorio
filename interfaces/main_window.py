@@ -123,39 +123,18 @@ class MainWindow:
 
     def _abrir_pacientes(self):
         self._limpar_conteudo()
-
-        ttk.Label(self.frame_conteudo, text="Pacientes",
-                  style="Titulo.TLabel",
-                  padding=(32, 24, 0, 0)).pack(anchor="w")
-
-        ttk.Label(self.frame_conteudo,
-                  text="Módulo de pacientes — em construção",
-                  style="Sub.TLabel",
-                  padding=(32, 0)).pack(anchor="w")
+        from interfaces.pacientes_view import PacientesView
+        PacientesView(self.frame_conteudo)
 
     def _abrir_medicos(self):
         self._limpar_conteudo()
-
-        ttk.Label(self.frame_conteudo, text="Médicos",
-                  style="Titulo.TLabel",
-                  padding=(32, 24, 0, 0)).pack(anchor="w")
-
-        ttk.Label(self.frame_conteudo,
-                  text="Módulo de médicos — em construção",
-                  style="Sub.TLabel",
-                  padding=(32, 0)).pack(anchor="w")
+        from interfaces.medicos_view import MedicosView
+        MedicosView(self.frame_conteudo)
 
     def _abrir_consultas(self):
         self._limpar_conteudo()
-
-        ttk.Label(self.frame_conteudo, text="Consultas",
-                  style="Titulo.TLabel",
-                  padding=(32, 24, 0, 0)).pack(anchor="w")
-
-        ttk.Label(self.frame_conteudo,
-                  text="Módulo de consultas — em construção",
-                  style="Sub.TLabel",
-                  padding=(32, 0)).pack(anchor="w")
+        from interfaces.consultas_view import ConsultasView
+        ConsultasView(self.frame_conteudo)
 
     def _sair(self):
         if messagebox.askyesno("Sair", "Deseja realmente sair do sistema?"):

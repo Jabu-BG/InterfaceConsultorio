@@ -51,12 +51,12 @@ def formatar_data_hora(data: date, hora: time) -> str:
 
 def str_para_date(texto: str) -> date | None:
     try:
-        return datetime.strptime(texto, "%d/%m/%Y")
+        return datetime.strptime(texto, "%d/%m/%Y").date()
     except ValueError:
         return None
     
 def str_para_time(texto: str) -> time | None:
     try:
-        return datetime.strftime(texto, "%H:%M").time()
+        return datetime.strptime(texto, "%H:%M").time()
     except ValueError:
         return None
